@@ -1,6 +1,7 @@
 package com.proj.my.verkeerapp.gameobjects;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -9,12 +10,14 @@ import com.proj.my.verkeerapp.Constants;
 import com.proj.my.verkeerapp.Match;
 import com.proj.my.verkeerapp.utils.PaintUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Question {
 
     private final String question;
     private final List<String> answers;
+    private final List<Rect> buttons = new ArrayList<>();
     private final int rightAnswer;
     private final Drawable situationImg;
     // add description
@@ -24,6 +27,7 @@ public class Question {
         this.answers = answers;
         this.rightAnswer = rightAnswer;
         this.situationImg = situationImg;
+        addButtons();
     }
 
     public void draw(Canvas canvas, Match match) {
@@ -57,11 +61,31 @@ public class Question {
 
         // Draw question text
         Paint questionPaint = PaintUtils.createPaint(35);
-        canvas.drawText(question, Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 3, questionPaint);
+        canvas.drawText("Vraag " + (match.getCurrentQuestIndex() + 1) + ": " + question,
+                Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 3, questionPaint);
+
+        // Draw buttons
+        Paint buttonPaint = new Paint();
+        buttonPaint.setColor(Color.BLUE);
+        for (Rect button : buttons)
+            canvas.drawRect(button, buttonPaint);
+    }
+    
+    private void addButtons() {
+        int space = Constants.SCREEN_WIDTH/20;
+        int buttonLength = Constants.SCREEN_WIDTH - Constants.SCREEN_WIDTH / 2 + space;
+        int buttonHeight = (((Constants.SCREEN_HEIGHT - space) / 3) * 2) / (answers.size() * 2);
+        int buttonY = Constants.SCREEN_HEIGHT / 3 + (2 * space);
+        int buttonX = Constants.SCREEN_WIDTH / 2;
+
+        for (int i = 0; i < answers.size(); i++) {
+            buttons.add(new Rect(buttonX, buttonY - space, buttonX + buttonLength - space, buttonY + buttonHeight - space));
+            buttonY += (buttonHeight * 2);
+        }
     }
 
-    public void update() {
-
+    public List<Rect> getButtons() {
+        return buttons;
     }
 
     public String getQuestion() {

@@ -38,6 +38,10 @@ public class Match {
         return questions.get(currentQuestIndex);
     }
 
+    public int getCurrentQuestIndex() {
+        return currentQuestIndex;
+    }
+
     public void setCurrentQuest(int currentQuestIndex) {
         this.currentQuestIndex = currentQuestIndex;
     }
