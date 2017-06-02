@@ -1,5 +1,6 @@
 package com.proj.my.verkeerapp.gameobjects;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -8,6 +9,7 @@ import android.graphics.drawable.Drawable;
 
 import com.proj.my.verkeerapp.Constants;
 import com.proj.my.verkeerapp.Match;
+import com.proj.my.verkeerapp.R;
 import com.proj.my.verkeerapp.utils.PaintUtils;
 
 import java.util.ArrayList;
@@ -20,13 +22,17 @@ public class Question {
     private final List<Rect> buttons = new ArrayList<>();
     private final int rightAnswer;
     private final Drawable situationImg;
+    private final Timer timer;
+    private final Drawable buttonTexture;
     // add description
 
-    public Question(String question, List<String> answers, int rightAnswer, Drawable situationImg) {
+    public Question(String question, List<String> answers, int rightAnswer, Context context) {
         this.question = question;
         this.answers = answers;
         this.rightAnswer = rightAnswer;
-        this.situationImg = situationImg;
+        this.situationImg = context.getResources().getDrawable(R.drawable.situation);
+        this.timer = new Timer(30, context.getResources().getDrawable(R.drawable.timer));
+        this.buttonTexture = context.getResources().getDrawable(R.drawable.button);
         addButtons();
     }
 
@@ -67,8 +73,15 @@ public class Question {
         // Draw buttons
         Paint buttonPaint = new Paint();
         buttonPaint.setColor(Color.BLUE);
-        for (Rect button : buttons)
-            canvas.drawRect(button, buttonPaint);
+        for (int i = 0; i < buttons.size(); i++) {
+            Rect buttonRect = buttons.get(i);
+            buttonTexture.setBounds(buttonRect);
+            buttonTexture.draw(canvas);
+            drawRectText(answers.get(i), canvas, buttonRect);
+        }
+
+        // Draw timer
+        timer.draw(canvas);
     }
     
     private void addButtons() {
@@ -79,9 +92,20 @@ public class Question {
         int buttonX = Constants.SCREEN_WIDTH / 2;
 
         for (int i = 0; i < answers.size(); i++) {
-            buttons.add(new Rect(buttonX, buttonY - space, buttonX + buttonLength - space, buttonY + buttonHeight - space));
+            buttons.add(new Rect(buttonX, buttonY - space,
+                    buttonX + buttonLength - space - Constants.SCREEN_WIDTH/10, buttonY + buttonHeight - space));
             buttonY += (buttonHeight * 2);
         }
+    }
+
+    private void drawRectText(String text, Canvas canvas, Rect r) {
+        Paint textPaint = PaintUtils.createPaint(30);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        int width = r.width();
+
+        int numOfChars = textPaint.breakText(text, true, width, null);
+        int start = (text.length() - numOfChars)/2;
+        canvas.drawText(text, start ,start+numOfChars, r.exactCenterX(), r.exactCenterY(), textPaint);
     }
 
     public List<Rect> getButtons() {

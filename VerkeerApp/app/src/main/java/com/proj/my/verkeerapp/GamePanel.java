@@ -3,7 +3,7 @@ package com.proj.my.verkeerapp;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -11,9 +11,9 @@ import android.view.SurfaceView;
 import com.proj.my.verkeerapp.gameobjects.FinishLine;
 import com.proj.my.verkeerapp.gameobjects.Player;
 import com.proj.my.verkeerapp.gameobjects.Question;
-import com.proj.my.verkeerapp.utils.PaintUtils;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
@@ -29,7 +29,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
 
         Question question = new Question("Welke fiets mag eerst?",
-                Arrays.asList("De blauwe fiets", "De gele fiets"), 1, context.getResources().getDrawable(R.drawable.situation));
+                Arrays.asList("De blauwe fiets", "De gele fiets"), 1, context);
         Player player1 = new Player("Henkie18", context.getResources().getDrawable(R.drawable.small_green), 0, 0, 4);
         Player player2 = new Player("Sjaakie", context.getResources().getDrawable(R.drawable.small_red), 0, 0, 10);
 
@@ -65,10 +65,14 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
-        switch (e.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                //TODO: player clicks button?
-                break;
+        if (e.getAction() == MotionEvent.ACTION_DOWN) {
+            List<Rect> buttons = match.getCurrentQuestion().getButtons();
+            for (int i = 0; i < buttons.size(); i++) {
+                if (buttons.get(i).contains((int) e.getX(), (int) e.getY())) {
+                    //TODO: add click action
+                    
+                }
+            }
         }
         return true;
     }
