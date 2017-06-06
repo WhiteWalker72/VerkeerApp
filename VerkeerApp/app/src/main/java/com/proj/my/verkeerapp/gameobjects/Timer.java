@@ -23,7 +23,6 @@ public class Timer {
     }
 
     public void draw(Canvas canvas) {
-        System.out.println(System.currentTimeMillis() - lastTime);
         if (seconds > 0 && System.currentTimeMillis() - lastTime >= 1000) {
             seconds -= 1;
             lastTime = System.currentTimeMillis();
@@ -42,6 +41,10 @@ public class Timer {
 
     public int getSeconds() {
         return seconds;
+    }
+
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
     }
 
     public void resetTime() {

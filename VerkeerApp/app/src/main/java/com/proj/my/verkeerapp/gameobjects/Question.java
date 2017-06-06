@@ -24,19 +24,23 @@ public class Question {
     private final Drawable situationImg;
     private final Timer timer;
     private final Drawable buttonTexture;
+    private final Drawable greenButtonTexture;
+    private final Drawable redButtonTexture;
     // add description
 
-    public Question(String question, List<String> answers, int rightAnswer, Context context) {
+    public Question(String question, List<String> answers, int rightAnswer, Drawable situationImg, Context context) {
         this.question = question;
         this.answers = answers;
         this.rightAnswer = rightAnswer;
-        this.situationImg = context.getResources().getDrawable(R.drawable.situation);
-        this.timer = new Timer(30, context.getResources().getDrawable(R.drawable.timer));
+        this.situationImg = situationImg;
+        this.timer = new Timer(10, context.getResources().getDrawable(R.drawable.timer));
         this.buttonTexture = context.getResources().getDrawable(R.drawable.button);
+        this.greenButtonTexture = context.getResources().getDrawable(R.drawable.green_button);
+        this.redButtonTexture = context.getResources().getDrawable(R.drawable.red_button);
         addButtons();
     }
 
-    public void draw(Canvas canvas, Match match) {
+    public void draw(Canvas canvas, Match match, boolean resultScreen) {
         Player player1 = match.getPlayer1();
         Player player2 = match.getPlayer2();
 
@@ -70,20 +74,29 @@ public class Question {
         canvas.drawText("Vraag " + (match.getCurrentQuestIndex() + 1) + ": " + question,
                 Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 3, questionPaint);
 
-        // Draw buttons
         Paint buttonPaint = new Paint();
         buttonPaint.setColor(Color.BLUE);
-        for (int i = 0; i < buttons.size(); i++) {
-            Rect buttonRect = buttons.get(i);
-            buttonTexture.setBounds(buttonRect);
-            buttonTexture.draw(canvas);
-            drawRectText(answers.get(i), canvas, buttonRect);
+        if (resultScreen) {
+            for (int i = 0; i < buttons.size(); i++) {
+                Drawable texture = i == rightAnswer ? greenButtonTexture : redButtonTexture;
+                Rect buttonRect = buttons.get(i);
+                texture.setBounds(buttonRect);
+                texture.draw(canvas);
+                drawRectText(answers.get(i), canvas, buttonRect);
+            }
+        } else {
+            for (int i = 0; i < buttons.size(); i++) {
+                Rect buttonRect = buttons.get(i);
+                buttonTexture.setBounds(buttonRect);
+                buttonTexture.draw(canvas);
+                drawRectText(answers.get(i), canvas, buttonRect);
+            }
         }
 
         // Draw timer
         timer.draw(canvas);
     }
-    
+
     private void addButtons() {
         int space = Constants.SCREEN_WIDTH/20;
         int buttonLength = Constants.SCREEN_WIDTH - Constants.SCREEN_WIDTH / 2 + space;
@@ -99,7 +112,14 @@ public class Question {
     }
 
     private void drawRectText(String text, Canvas canvas, Rect r) {
-        Paint textPaint = PaintUtils.createPaint(30);
+        int counter = 0;
+        int textLength = text.length();
+        while (textLength > 0) {
+            counter += 3;
+            textLength -= 10;
+        }
+
+        Paint textPaint = PaintUtils.createPaint(text.length() <= 12 ? 30 : 30 - counter);
         textPaint.setTextAlign(Paint.Align.CENTER);
         int width = r.width();
 
@@ -128,4 +148,7 @@ public class Question {
         return situationImg;
     }
 
+    public Timer getTimer() {
+        return timer;
+    }
 }

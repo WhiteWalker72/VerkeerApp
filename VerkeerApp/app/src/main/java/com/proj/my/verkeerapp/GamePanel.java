@@ -11,16 +11,19 @@ import android.view.SurfaceView;
 import com.proj.my.verkeerapp.gameobjects.FinishLine;
 import com.proj.my.verkeerapp.gameobjects.Player;
 import com.proj.my.verkeerapp.gameobjects.Question;
+import com.proj.my.verkeerapp.gameobjects.EndScreen;
+import com.proj.my.verkeerapp.utils.MathUtils;
 
 import java.util.Arrays;
 import java.util.List;
-
 
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
     private MainThread thread;
     private final FinishLine finishLine;
     private final Match match;
+    private final EndScreen endScreen;
+    private Long displayResultTime = null;
 
     public GamePanel(Context context) {
         super(context);
@@ -28,13 +31,22 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         this.thread = new MainThread(getHolder(), this);
         setFocusable(true);
 
-        Question question = new Question("Welke fiets mag eerst?",
-                Arrays.asList("De blauwe fiets", "De gele fiets"), 1, context);
-        Player player1 = new Player("Henkie18", context.getResources().getDrawable(R.drawable.small_green), 0, 0, 4);
-        Player player2 = new Player("Sjaakie", context.getResources().getDrawable(R.drawable.small_red), 0, 0, 10);
+        Player player1 = new Player("Henkie18", context.getResources().getDrawable(R.drawable.small_green), 0, 0, 0);
+        Player player2 = new Player("Computer", context.getResources().getDrawable(R.drawable.small_red), 0, 0, 0);
 
-        this.match = new Match(Arrays.asList(question), player1, player2);
+        this.match = new Match(getQuestions(context), player1, player2);
         this.finishLine = new FinishLine(context.getResources().getDrawable(R.drawable.finish_line));
+        this.endScreen = new EndScreen(match, context);
+    }
+
+    private List<Question> getQuestions(Context context) {
+        return Arrays.asList(
+                new Question("Welke fiets mag eerst?", Arrays.asList("De blauwe fiets", "De gele fiets"),
+                         1, context.getResources().getDrawable(R.drawable.situation), context),
+                new Question("Wat betekent dit bord?", Arrays.asList("Je moet hier omkeren", "Aan het einde van de weg is een sloot", "Deze weg loopt dood"),
+                        2, context.getResources().getDrawable(R.drawable.doodlopende_bord), context)
+
+        );
     }
 
     @Override
@@ -69,8 +81,13 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
             List<Rect> buttons = match.getCurrentQuestion().getButtons();
             for (int i = 0; i < buttons.size(); i++) {
                 if (buttons.get(i).contains((int) e.getX(), (int) e.getY())) {
-                    //TODO: add click action
-                    
+                    // Right answer so add score
+                    if (i == match.getCurrentQuestion().getRightAnswer()) {
+                        match.getPlayer1().setScore(match.getPlayer1().getScore() + 1);
+                    }
+                    displayResultTime = System.currentTimeMillis();
+                    match.getCurrentQuestion().getTimer().setSeconds(5);
+                    handleComputerScore();
                 }
             }
         }
@@ -82,9 +99,37 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
         super.draw(canvas);
         canvas.drawColor(Color.BLACK);
 
-        // Draw question  with players
-        match.getCurrentQuestion().draw(canvas, match);
+        if (match.getCurrentQuestIndex() >= match.getQuestions().size()) {
+            endScreen.draw(canvas);
+            return;
+        }
+
+        Question currQuestion = match.getCurrentQuestion();
+        if (currQuestion.getTimer().getSeconds() <= 0 && displayResultTime == null) {
+            // Set time to show result screen for 5 seconds
+            displayResultTime = System.currentTimeMillis();
+            currQuestion.getTimer().setSeconds(5);
+            handleComputerScore();
+        }
+
+        // Go to the next question
+        if (displayResultTime != null && System.currentTimeMillis() - displayResultTime >= 5000) {
+            match.setCurrentQuest(match.getCurrentQuestIndex() + 1);
+            currQuestion = match.getCurrentQuestion();
+            displayResultTime = null;
+        }
+
+        //// TODO: remove
+//        endScreen.draw(canvas);
+        // Draw question with players
+        currQuestion.draw(canvas, match, displayResultTime != null);
         finishLine.draw(canvas, match);
+    }
+
+    private void handleComputerScore() {
+        if (MathUtils.getRandom(1,2) == 1) {
+            match.getPlayer2().setScore(match.getPlayer2().getScore() + 1);
+        }
     }
 
     public void update() {

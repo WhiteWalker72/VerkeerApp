@@ -38,7 +38,7 @@ public class FinishLine {
         int playerSize = Constants.SCREEN_WIDTH/15;
 
         // Draw player1
-        int lowX1 = space + xDiff/match.getFinishScore() * player1.getScore();
+        int lowX1 = getLowX(player1, match);
         Rect player1Bounds = new Rect(lowX1, y2 - playerSize,
                 lowX1 + playerSize, y2);
         player1.getTexture().setBounds(player1Bounds);
@@ -49,7 +49,7 @@ public class FinishLine {
         canvas.drawText(player1.getName(), lowX1, y2 - playerSize - 10, playerPaint);
 
         // Draw player2
-        int lowX2 = space + xDiff/match.getFinishScore() * player2.getScore();
+        int lowX2 = getLowX(player2, match);
         Rect player2Bounds = new Rect(lowX2, y2 - playerSize,
                 lowX2 + playerSize, y2);
         player2.getTexture().setBounds(player2Bounds);
@@ -57,6 +57,13 @@ public class FinishLine {
 
         // Draw player2 name
         canvas.drawText(player2.getName(), lowX2, y2 - playerSize - 10, playerPaint);
+    }
+
+    private int getLowX(Player p, Match match) {
+        int space = Constants.SCREEN_WIDTH/50;
+        int xDiff = Constants.SCREEN_WIDTH -  2 * space;
+        return p.getScore() >= match.getFinishScore() ? xDiff - (space * 3) : p.getScore() == 0
+                ? space : space + ((xDiff/match.getFinishScore()) * p.getScore());
     }
 
 }
