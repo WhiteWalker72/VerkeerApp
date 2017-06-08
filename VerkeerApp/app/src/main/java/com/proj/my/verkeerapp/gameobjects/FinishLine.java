@@ -2,7 +2,6 @@ package com.proj.my.verkeerapp.gameobjects;
 
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -34,7 +33,6 @@ public class FinishLine {
         finishLine.setBounds(imageBounds);
         finishLine.draw(canvas);
 
-        int xDiff = Constants.SCREEN_WIDTH -  2 * space;
         int playerSize = Constants.SCREEN_WIDTH/15;
 
         // Draw player1

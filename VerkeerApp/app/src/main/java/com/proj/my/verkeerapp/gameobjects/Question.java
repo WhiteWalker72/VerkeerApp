@@ -19,7 +19,7 @@ public class Question {
 
     private final String question;
     private final List<String> answers;
-    private final List<Rect> buttons = new ArrayList<>();
+    private final List<Button> buttons = new ArrayList<>();
     private final int rightAnswer;
     private final Drawable situationImg;
     private final Timer timer;
@@ -54,7 +54,6 @@ public class Question {
 
         // Draw players
         Paint paint = PaintUtils.createPaint(25);
-
         String player1Text = player1.getName() + ":   " + player1.getScore() + " punten";
         String player2Text = player2.getName() + ":   " + player2.getScore() + " punten";
 
@@ -74,23 +73,12 @@ public class Question {
         canvas.drawText("Vraag " + (match.getCurrentQuestIndex() + 1) + ": " + question,
                 Constants.SCREEN_WIDTH / 2, Constants.SCREEN_HEIGHT / 3, questionPaint);
 
-        Paint buttonPaint = new Paint();
-        buttonPaint.setColor(Color.BLUE);
         if (resultScreen) {
-            for (int i = 0; i < buttons.size(); i++) {
-                Drawable texture = i == rightAnswer ? greenButtonTexture : redButtonTexture;
-                Rect buttonRect = buttons.get(i);
-                texture.setBounds(buttonRect);
-                texture.draw(canvas);
-                drawRectText(answers.get(i), canvas, buttonRect);
-            }
+            for (int i = 0; i < buttons.size(); i++)
+                buttons.get(i).draw(canvas, i == rightAnswer ? greenButtonTexture : redButtonTexture, answers.get(i));
         } else {
-            for (int i = 0; i < buttons.size(); i++) {
-                Rect buttonRect = buttons.get(i);
-                buttonTexture.setBounds(buttonRect);
-                buttonTexture.draw(canvas);
-                drawRectText(answers.get(i), canvas, buttonRect);
-            }
+            for (int i = 0; i < buttons.size(); i++)
+                buttons.get(i).draw(canvas, buttonTexture, answers.get(i));
         }
 
         // Draw timer
@@ -105,30 +93,13 @@ public class Question {
         int buttonX = Constants.SCREEN_WIDTH / 2;
 
         for (int i = 0; i < answers.size(); i++) {
-            buttons.add(new Rect(buttonX, buttonY - space,
-                    buttonX + buttonLength - space - Constants.SCREEN_WIDTH/10, buttonY + buttonHeight - space));
+            buttons.add(new Button(new Rect(buttonX, buttonY - space,
+                    buttonX + buttonLength - space - Constants.SCREEN_WIDTH/10, buttonY + buttonHeight - space), buttonTexture));
             buttonY += (buttonHeight * 2);
         }
     }
 
-    private void drawRectText(String text, Canvas canvas, Rect r) {
-        int counter = 0;
-        int textLength = text.length();
-        while (textLength > 0) {
-            counter += 3;
-            textLength -= 10;
-        }
-
-        Paint textPaint = PaintUtils.createPaint(text.length() <= 12 ? 30 : 30 - counter);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        int width = r.width();
-
-        int numOfChars = textPaint.breakText(text, true, width, null);
-        int start = (text.length() - numOfChars)/2;
-        canvas.drawText(text, start ,start+numOfChars, r.exactCenterX(), r.exactCenterY(), textPaint);
-    }
-
-    public List<Rect> getButtons() {
+    public List<Button> getButtons() {
         return buttons;
     }
 
