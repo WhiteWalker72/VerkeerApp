@@ -60,4 +60,8 @@ public class Button {
         this.texture = texture;
     }
 
+    public String getText() {
+        return text;
+    }
+    
 }

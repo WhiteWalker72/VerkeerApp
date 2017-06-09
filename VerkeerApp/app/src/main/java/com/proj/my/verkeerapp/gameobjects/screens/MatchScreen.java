@@ -73,7 +73,10 @@ public class MatchScreen extends Screen {
     @Override
     public void draw(Canvas canvas) {
         if (match.getCurrentQuestIndex() >= match.getQuestions().size()) {
-            getGamePanel().setCurrentScreen(new EndScreen(match, getGamePanel()));
+            if (match.getPlayer1().getScore() > match.getPlayer2().getScore())
+                getGamePanel().setCurrentScreen(new WinScreen(match, getGamePanel()));
+            else
+                getGamePanel().setCurrentScreen(new LoseScreen(match, getGamePanel()));
             return;
         }
 

@@ -41,6 +41,7 @@ public class StartScreen extends Screen {
     @Override
     public boolean onClick(MotionEvent e) {
         List<Button> buttons = getButtons();
+
         for (int i = 0; i < buttons.size(); i++) {
             if (buttons.get(i).getRect().contains((int) e.getX(), (int) e.getY())) {
                 //TODO: add more button actions
@@ -48,10 +49,8 @@ public class StartScreen extends Screen {
                 if (i == 1) {
                     getGamePanel().setCurrentScreen(new MatchScreen(getGamePanel()));
                 }
-
             }
         }
-
         return true;
     }
 
