@@ -1,7 +1,6 @@
 package com.proj.my.verkeerapp.gameobjects.screens;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -40,18 +39,17 @@ public class StartScreen extends Screen {
 
     @Override
     public boolean onClick(MotionEvent e) {
-        List<Button> buttons = getButtons();
-
-        for (int i = 0; i < buttons.size(); i++) {
-            if (buttons.get(i).getRect().contains((int) e.getX(), (int) e.getY())) {
-                //TODO: add more button actions
-
-                if (i == 1) {
-                    getGamePanel().setCurrentScreen(new MatchScreen(getGamePanel()));
+        for (Button button : getButtons()) {
+            if (buttonClicked(e, button)) {
+                if (button.getText().equalsIgnoreCase("tegen computer")) {
+                    getGamePanel().setCurrentScreen(new ChooseScreen(getGamePanel()));
+                } else if (button.getText().equalsIgnoreCase("log uit")) {
+                    getGamePanel().getMainActivity().finish();
                 }
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -84,7 +82,7 @@ public class StartScreen extends Screen {
         y1 += space;
         buttons.add(new Button(new Rect(x1, y1, x2, (int) (y1 + space/1.5)), buttonTexture, "Profiel en prestaties"));
         y1 += space;
-        buttons.add(new Button(new Rect(x1, y1, x2, (int) (y1 + space/1.5)), buttonTexture, "Logout"));
+        buttons.add(new Button(new Rect(x1, y1, x2, (int) (y1 + space/1.5)), buttonTexture, "Log uit"));
         return buttons;
     }
 

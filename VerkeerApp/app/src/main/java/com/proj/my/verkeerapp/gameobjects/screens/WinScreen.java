@@ -9,7 +9,6 @@ import com.proj.my.verkeerapp.Constants;
 import com.proj.my.verkeerapp.GamePanel;
 import com.proj.my.verkeerapp.Match;
 import com.proj.my.verkeerapp.R;
-import com.proj.my.verkeerapp.gameobjects.Button;
 import com.proj.my.verkeerapp.utils.MathUtils;
 
 import java.util.ArrayList;
@@ -79,11 +78,6 @@ public class WinScreen extends EndScreen {
             firework.setBounds(rect);
             firework.draw(canvas);
         }
-    }
-
-    @Override
-    List<Button> getButtons() {
-        return null;
     }
 
 }

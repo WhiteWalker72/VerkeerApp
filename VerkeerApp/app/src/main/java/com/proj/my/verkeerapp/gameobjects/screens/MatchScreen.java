@@ -14,7 +14,6 @@ import com.proj.my.verkeerapp.gameobjects.Player;
 import com.proj.my.verkeerapp.gameobjects.Question;
 import com.proj.my.verkeerapp.utils.MathUtils;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MatchScreen extends Screen {
@@ -23,25 +22,14 @@ public class MatchScreen extends Screen {
     private final Match match;
     private Long displayResultTime = null;
 
-    public MatchScreen(GamePanel gamePanel) {
+    public MatchScreen(GamePanel gamePanel, Match match) {
         super(gamePanel);
         Context context = gamePanel.getContext();
 
-        Player player1 = new Player("Henkie18", context.getResources().getDrawable(R.drawable.small_green), 0, 0, 0);
-        Player player2 = new Player("Computer", context.getResources().getDrawable(R.drawable.small_red), 0, 0, 0);
 
-        this.match = new Match(getQuestions(context), player1, player2);
+
+        this.match = match;
         this.finishLine = new FinishLine(context.getResources().getDrawable(R.drawable.finish_line));
-
-    }
-
-    private List<Question> getQuestions(Context context) {
-        return Arrays.asList(
-                new Question("Welke fiets mag eerst?", Arrays.asList("De blauwe fiets", "De gele fiets"),
-                        1, context.getResources().getDrawable(R.drawable.situation), context),
-                new Question("Wat betekent dit bord?", Arrays.asList("Je moet hier omkeren", "Aan het einde van de weg is een sloot", "Deze weg loopt dood"),
-                        2, context.getResources().getDrawable(R.drawable.doodlopende_bord), context)
-        );
     }
 
     @Override
@@ -51,7 +39,7 @@ public class MatchScreen extends Screen {
         List<Button> buttons = getButtons();
 
         for (int i = 0; i < buttons.size(); i++) {
-            if (buttons.get(i).getRect().contains((int) e.getX(), (int) e.getY())) {
+            if (buttonClicked(e, buttons.get(i))) {
                 // Right answer so add score
                 if (i == match.getCurrentQuestion().getRightAnswer()) {
                     match.getPlayer1().setScore(match.getPlayer1().getScore() + 1);

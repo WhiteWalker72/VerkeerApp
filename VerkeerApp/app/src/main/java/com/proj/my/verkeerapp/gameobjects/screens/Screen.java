@@ -26,4 +26,8 @@ public abstract class Screen {
         return gamePanel;
     }
 
+    protected boolean buttonClicked(MotionEvent e, Button button) {
+        return button.getRect().contains((int) e.getX(), (int) e.getY());
+    }
+
 }

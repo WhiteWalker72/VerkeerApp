@@ -1,7 +1,6 @@
 package com.proj.my.verkeerapp.gameobjects.screens;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -14,10 +13,9 @@ import com.proj.my.verkeerapp.Match;
 import com.proj.my.verkeerapp.R;
 import com.proj.my.verkeerapp.gameobjects.Button;
 import com.proj.my.verkeerapp.gameobjects.Player;
-import com.proj.my.verkeerapp.utils.MathUtils;
 import com.proj.my.verkeerapp.utils.PaintUtils;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class EndScreen extends Screen {
@@ -50,6 +48,15 @@ public abstract class EndScreen extends Screen {
 
     @Override
     public boolean onClick(MotionEvent e) {
+        for (Button button : getButtons()) {
+            if (button.getRect().contains((int) e.getX(), (int) e.getY())) {
+                if (button.getText().equalsIgnoreCase("opnieuw")) {
+                    getGamePanel().setCurrentScreen(new ChooseScreen(getGamePanel()));
+                } else if (button.getText().equalsIgnoreCase("terug")) {
+                    getGamePanel().setCurrentScreen(new StartScreen(getGamePanel()));
+                }
+            }
+        }
         return false;
     }
 
@@ -57,7 +64,7 @@ public abstract class EndScreen extends Screen {
     public void draw(Canvas canvas) {
         // Draw frame
         int border = Constants.SCREEN_WIDTH/10;
-        Rect frameBounds = new Rect(0 + border, border, Constants.SCREEN_WIDTH - border, Constants.SCREEN_HEIGHT - border);
+        Rect frameBounds = new Rect(border, border, Constants.SCREEN_WIDTH - border, Constants.SCREEN_HEIGHT - border);
         frame.setBounds(frameBounds);
         frame.draw(canvas);
 
@@ -66,6 +73,10 @@ public abstract class EndScreen extends Screen {
                 ? match.getPlayer1() : match.getPlayer2(), Constants.SCREEN_HEIGHT/2 + 40);
         drawPlayerText(canvas,match.getPlayer1().getScore() <= match.getPlayer2().getScore()
                 ? match.getPlayer1() : match.getPlayer2(), Constants.SCREEN_HEIGHT/2 + 100);
+
+        for (Button button : getButtons()) {
+            button.draw(canvas);
+        }
     }
 
     protected Match getMatch() {
@@ -81,6 +92,22 @@ public abstract class EndScreen extends Screen {
         text.draw(canvas);
     }
 
+    @Override
+    List<Button> getButtons() {
+        Drawable buttonTexture = getGamePanel().getContext().getResources().getDrawable(R.drawable.button);
 
+        // Values of frame
+        int border = Constants.SCREEN_WIDTH/7;
+        int x1 = border;
+        int x2 = Constants.SCREEN_WIDTH - border;
+        int buttonLength = (x2 - x1)/2;
+        int y1 = Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/6;
+        int y2 = Constants.SCREEN_HEIGHT/2 + Constants.SCREEN_HEIGHT/6 + Constants.SCREEN_HEIGHT/10;
+
+        return Arrays.asList(
+                new Button(new Rect(x1, y1, x1 + buttonLength, y2), buttonTexture, "Opnieuw"),
+                new Button(new Rect(x1 + buttonLength, y1, x1 + (buttonLength * 2), y2), buttonTexture, "Terug")
+        );
+    }
 
 }

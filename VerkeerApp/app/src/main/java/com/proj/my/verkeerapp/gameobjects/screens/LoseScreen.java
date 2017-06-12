@@ -8,9 +8,6 @@ import com.proj.my.verkeerapp.Constants;
 import com.proj.my.verkeerapp.GamePanel;
 import com.proj.my.verkeerapp.Match;
 import com.proj.my.verkeerapp.R;
-import com.proj.my.verkeerapp.gameobjects.Button;
-
-import java.util.List;
 
 public class LoseScreen extends EndScreen {
 
@@ -32,11 +29,6 @@ public class LoseScreen extends EndScreen {
 
         super.draw(canvas);
         displayTextOnScreen(loseText, canvas);
-    }
-
-    @Override
-    List<Button> getButtons() {
-        return null;
     }
 
 }
