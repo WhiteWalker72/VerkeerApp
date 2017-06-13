@@ -48,8 +48,14 @@ public class ChooseScreen extends Screen {
 
     private List<Question> getSituationQuestions(Context context) {
         return Arrays.asList(
+                new Question("Welke fiets mag eerst?", Arrays.asList("De rode fiets", "De gele fiets"),
+                        1, context.getResources().getDrawable(R.drawable.situatie1), context),
+                new Question("Welk voertuig mag eerst?", Arrays.asList("De rode fiets", "De gele auto"),
+                        0, context.getResources().getDrawable(R.drawable.situatie2), context),
                 new Question("Welke fiets mag eerst?", Arrays.asList("De blauwe fiets", "De gele fiets"),
-                       1, context.getResources().getDrawable(R.drawable.situation), context)
+                       1, context.getResources().getDrawable(R.drawable.situatie3), context),
+                new Question("Wie mag eerst?", Arrays.asList("De gele auto", "Het meisje"),
+                        1, context.getResources().getDrawable(R.drawable.situatie4), context)
 
         );
     }
@@ -57,7 +63,11 @@ public class ChooseScreen extends Screen {
     private List<Question> getSignQuestions(Context context) {
         return Arrays.asList(
                 new Question("Wat betekent dit bord?", Arrays.asList("Je moet hier omkeren", "Aan het einde van de weg is een sloot", "Deze weg loopt dood"),
-                        2, context.getResources().getDrawable(R.drawable.doodlopende_bord), context)
+                        2, context.getResources().getDrawable(R.drawable.bord1), context),
+                new Question("Wat betekent dit bord?", Arrays.asList("Hier mag je niet rennen", "Pas op! Hier kunnen kinderen oversteken"),
+                        1, context.getResources().getDrawable(R.drawable.bord2), context),
+                new Question("Wat betekent dit bord?", Arrays.asList("Dit is een snelweg", "Picknickplaats"),
+                        0, context.getResources().getDrawable(R.drawable.bord3), context)
         );
     }
 
@@ -76,7 +86,7 @@ public class ChooseScreen extends Screen {
         Rect rect2 = new Rect(rect1.right + borderX, borderY, rect1.right + buttonLength, Constants.SCREEN_HEIGHT - borderY);
 
         return Arrays.asList(
-                new Button(rect1, getGamePanel().getResources().getDrawable(R.drawable.situation), "Situaties"),
+                new Button(rect1, getGamePanel().getResources().getDrawable(R.drawable.situatie3), "Situaties"),
                 new Button(rect2, getGamePanel().getResources().getDrawable(R.drawable.borden), "Borden")
         );
     }

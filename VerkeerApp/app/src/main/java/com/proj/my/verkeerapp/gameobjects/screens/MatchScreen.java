@@ -10,7 +10,6 @@ import com.proj.my.verkeerapp.Match;
 import com.proj.my.verkeerapp.R;
 import com.proj.my.verkeerapp.gameobjects.Button;
 import com.proj.my.verkeerapp.gameobjects.FinishLine;
-import com.proj.my.verkeerapp.gameobjects.Player;
 import com.proj.my.verkeerapp.gameobjects.Question;
 import com.proj.my.verkeerapp.utils.MathUtils;
 
@@ -25,17 +24,15 @@ public class MatchScreen extends Screen {
     public MatchScreen(GamePanel gamePanel, Match match) {
         super(gamePanel);
         Context context = gamePanel.getContext();
-
-
-
         this.match = match;
         this.finishLine = new FinishLine(context.getResources().getDrawable(R.drawable.finish_line));
     }
 
     @Override
     public boolean onClick(MotionEvent e) {
-        if (displayResultTime != null)
+        if (displayResultTime != null) {
             return false;
+        }
         List<Button> buttons = getButtons();
 
         for (int i = 0; i < buttons.size(); i++) {

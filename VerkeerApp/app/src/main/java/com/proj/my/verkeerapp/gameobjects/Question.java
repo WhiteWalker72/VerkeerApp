@@ -47,7 +47,7 @@ public class Question {
         int size = Constants.SCREEN_HEIGHT/10 * 7;
         int border = Constants.SCREEN_WIDTH/30;
 
-        // Draw situation image
+        // Draw situatie3 image
         Rect imageBounds = new Rect(border, Constants.SCREEN_HEIGHT - size, size, Constants.SCREEN_HEIGHT - border);
         situationImg.setBounds(imageBounds);
         situationImg.draw(canvas);
